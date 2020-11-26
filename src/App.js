@@ -1,11 +1,17 @@
 import { useState, useEffect } from "react";
 import Map from "./Components/Map";
 import Loader from "./Components/Loader";
+import Header from "./Components/Header.js";
 
 const key = process.env.REACT_APP_NASA_KEY;
 function App() {
   const [eventData, setEventData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [type, setType] = useState("Wildfires");
+  const changed = (e) => {
+    console.log(e.target.value);
+    setType(e.target.value);
+  };
   useEffect(() => {
     const fetchEvent = async () => {
       setLoading(true);
@@ -18,7 +24,12 @@ function App() {
     };
     fetchEvent();
   }, []);
-  return <div>{!loading ? <Map eventData={eventData} /> : <Loader />}</div>;
+  return (
+    <div>
+      <Header value={type} changed={changed} />
+      {!loading ? <Map eventData={eventData} type={type} /> : <Loader />}
+    </div>
+  );
 }
 
 export default App;
