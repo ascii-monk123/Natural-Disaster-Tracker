@@ -1,5 +1,3 @@
-import { popup } from "leaflet";
-
 const Pop = ({ feature }) => {
   let popupContent;
   if (feature.properties && feature.properties.popupContent) {
