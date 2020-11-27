@@ -1,5 +1,7 @@
-import { marker } from "leaflet";
+import React from "react";
+import ReactDOMServer from "react-dom/server";
 import moment from "moment";
+import Pop from "./Pop";
 import {
   MapContainer,
   TileLayer,
@@ -8,9 +10,19 @@ import {
   Polyline,
   Polygon,
   Tooltip,
+  GeoJSON,
 } from "react-leaflet";
-import { fireIcon, volcano } from "../icons";
+import L from "leaflet";
+import { fireIcon, volcano, ice } from "../icons";
 import uniqid from "uniqid";
+const onEachFeature = (feature, layer) => {
+  const popupContent = ReactDOMServer.renderToString(<Pop feature={feature} />);
+  layer.bindPopup(popupContent);
+};
+function pointToLayer(feature, latlng) {
+  //    return L.circleMarker(latlng, null); // Change marker to circle
+  return L.marker(latlng, { icon: ice }); // Change the icon to a custom icon
+}
 const Map = ({ eventData, centre, zoom, type }) => {
   const locations = eventData.map((ev) => {
     if (ev.categories[0].id === 8 && type.toLowerCase() === "wildfires") {
@@ -40,12 +52,27 @@ const Map = ({ eventData, centre, zoom, type }) => {
           </Popup>
         </Marker>
       );
+    } else if (ev.categories[0].id === 15 && type === "Sea and Lake Ice") {
+      return (
+        <React.Fragment key={uniqid()}>
+          <GeoJSON
+            data={ev.geometries}
+            pointToLayer={pointToLayer}
+            onEachFeature={onEachFeature}
+          />
+          <Polyline
+            color="blue"
+            positions={ev.geometries.map((geo) => {
+              return [geo.coordinates[1], geo.coordinates[0]];
+            })}
+          />
+        </React.Fragment>
+      );
     } else if (
       ev.categories[0].id === 12 &&
       type.toLowerCase() === "volcanoes"
     ) {
       if (ev.geometries[0].type === "Polygon") {
-        console.log(ev.geometries[0].coordinates[0]);
         return (
           <Polygon
             positions={ev.geometries[0].coordinates[0].map((coor) => [
@@ -126,6 +153,6 @@ const Map = ({ eventData, centre, zoom, type }) => {
 };
 Map.defaultProps = {
   centre: [32.732998, 74.864273],
-  zoom: 6,
+  zoom: 3,
 };
 export default Map;

@@ -3,13 +3,11 @@ import Map from "./Components/Map";
 import Loader from "./Components/Loader";
 import Header from "./Components/Header.js";
 
-const key = process.env.REACT_APP_NASA_KEY;
 function App() {
   const [eventData, setEventData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState("Wildfires");
   const changed = (e) => {
-    console.log(e.target.value);
     setType(e.target.value);
   };
   useEffect(() => {

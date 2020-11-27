@@ -8,6 +8,7 @@ const Header = ({ type, changed }) => {
         <option name="Wildfires">Wildfires</option>
         <option name="Severe Storms">Severe Storms</option>
         <option name="Volcanoes">Volcanoes</option>
+        <option name="Sea and Lake Ice">Sea and Lake Ice</option>
       </select>
     </div>
   );
